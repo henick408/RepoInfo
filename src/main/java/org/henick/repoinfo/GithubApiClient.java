@@ -28,7 +28,7 @@ class GithubApiClient {
                 .onStatus(
                         status -> status == HttpStatus.NOT_FOUND,
                         (_, _) -> {
-                            throw new RuntimeException();
+                            throw new UserNotFoundException(username, "User with name = '" + username + "' does not exist");
                         }
                 )
                 .body(new ParameterizedTypeReference<>() {} );
@@ -42,12 +42,6 @@ class GithubApiClient {
         List<BranchExternalDto> branches = githubApiRestClient.get()
                 .uri("/repos/{owner}/{repo}/branches", owner, repo)
                 .retrieve()
-                .onStatus(
-                        status -> status == HttpStatus.NOT_FOUND,
-                        (_, _) -> {
-                            throw new RuntimeException();
-                        }
-                )
                 .body(new ParameterizedTypeReference<>() {});
         return branches.stream()
                 .map(branchMapper::fromExternalDto)
