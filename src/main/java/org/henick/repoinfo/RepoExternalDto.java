@@ -1,8 +1,8 @@
 package org.henick.repoinfo;
 
-record ExternalRepoDto(
+record RepoExternalDto(
         String name,
-        ExternalOwnerDto owner,
+        OwnerExternalDto owner,
         boolean fork
 ) {
 }

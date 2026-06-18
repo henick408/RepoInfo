@@ -1,7 +1,7 @@
 package org.henick.repoinfo;
 
 record Repo(
-        String repositoryName,
+        String name,
         String ownerLogin,
         boolean isFork
 ) {

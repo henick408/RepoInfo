@@ -16,8 +16,8 @@ class GithubApiClient {
         this.githubApiRestClient = restClient;
     }
 
-    List<Repo> getReposByUser(String username) {
-        List<ExternalRepoDto> repositories = githubApiRestClient.get()
+    List<Repo> getRepos(String username) {
+        List<RepoExternalDto> repositories = githubApiRestClient.get()
                 .uri("/users/{username}/repos", username)
                 .retrieve()
                 .onStatus(

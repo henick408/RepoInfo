@@ -1,6 +1,6 @@
 package org.henick.repoinfo;
 
-record ExternalOwnerDto(
+record OwnerExternalDto(
         String login
 ) {
 }
