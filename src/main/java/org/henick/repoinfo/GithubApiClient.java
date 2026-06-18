@@ -11,9 +11,14 @@ import java.util.List;
 class GithubApiClient {
 
     private final RestClient githubApiRestClient;
+    private final BranchMapper branchMapper;
+    private final RepoMapper repoMapper;
 
-    GithubApiClient(RestClient restClient) {
+
+    GithubApiClient(RestClient restClient, BranchMapper branchMapper, RepoMapper repoMapper) {
         this.githubApiRestClient = restClient;
+        this.branchMapper = branchMapper;
+        this.repoMapper = repoMapper;
     }
 
     List<Repo> getRepos(String username) {
@@ -29,9 +34,24 @@ class GithubApiClient {
                 .body(new ParameterizedTypeReference<>() {} );
 
         return repositories.stream()
-                .map(externalRepo ->
-                        new Repo(externalRepo.name(), externalRepo.owner().login(), externalRepo.fork())
-                )
+                .map(repoMapper::fromExternalDto)
                 .toList();
     }
+
+    List<Branch> getBranches(String owner, String repo) {
+        List<BranchExternalDto> branches = githubApiRestClient.get()
+                .uri("/repos/{owner}/{repo}/branches", owner, repo)
+                .retrieve()
+                .onStatus(
+                        status -> status == HttpStatus.NOT_FOUND,
+                        (_, _) -> {
+                            throw new RuntimeException();
+                        }
+                )
+                .body(new ParameterizedTypeReference<>() {});
+        return branches.stream()
+                .map(branchMapper::fromExternalDto)
+                .toList();
+    }
+
 }

@@ -8,16 +8,22 @@ import java.util.List;
 class GithubService {
 
     private final GithubApiClient githubApiClient;
+    private final RepoMapper repoMapper;
 
-    GithubService(GithubApiClient githubApiClient) {
+    GithubService(GithubApiClient githubApiClient, RepoMapper repoMapper) {
         this.githubApiClient = githubApiClient;
+        this.repoMapper = repoMapper;
     }
 
     List<RepoResponseDto> getUserInfo(String userLogin) {
-        List<Repo> repos = githubApiClient.getRepos(userLogin);
+        List<Repo> repos = githubApiClient.getRepos(userLogin).stream().filter(repo -> !repo.isFork()).toList();
+        for (Repo repo : repos) {
+            List<Branch> branches = githubApiClient.getBranches(repo.getOwnerLogin(), repo.getName());
+            repo.setBranches(branches);
+        }
+
         return repos.stream()
-                .filter(repo -> !repo.isFork())
-                .map(repo -> new RepoResponseDto(repo.name(), repo.ownerLogin()))
+                .map(repoMapper::toResponseDto)
                 .toList();
     }
 

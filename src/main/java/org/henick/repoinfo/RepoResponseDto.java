@@ -1,7 +1,10 @@
 package org.henick.repoinfo;
 
+import java.util.List;
+
 record RepoResponseDto(
-        String name,
-        String ownerLogin
+        String repositoryName,
+        String ownerLogin,
+        List<BranchResponseDto> branches
 ) {
 }
