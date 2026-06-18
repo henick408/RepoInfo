@@ -17,10 +17,10 @@ class GithubService {
 
     List<RepoResponseDto> getUserInfo(String userLogin) {
         List<Repo> repos = githubApiClient.getRepos(userLogin).stream().filter(repo -> !repo.isFork()).toList();
-        for (Repo repo : repos) {
+        repos.parallelStream().forEach(repo -> {
             List<Branch> branches = githubApiClient.getBranches(repo.getOwnerLogin(), repo.getName());
             repo.setBranches(branches);
-        }
+        });
 
         return repos.stream()
                 .map(repoMapper::toResponseDto)
