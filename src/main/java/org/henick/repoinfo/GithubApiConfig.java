@@ -11,10 +11,11 @@ class GithubApiConfig {
     @Bean
     RestClient githubApiRestClient(
             RestClient.Builder builder,
+            @Value("${github-api.base_url}") String baseUrl,
             @Value("${github-api.token}") String token
     ) {
         RestClient.Builder clientBuilder = builder
-                .baseUrl("https://api.github.com");
+                .baseUrl(baseUrl);
         if (token != null && !token.isBlank()) {
             clientBuilder.defaultHeader("Authorization", "Bearer " + token);
         }
