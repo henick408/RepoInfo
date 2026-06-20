@@ -122,8 +122,9 @@ class GithubServiceTests {
         WireMock.stubFor(WireMock.get("/users/nonExistingUser/repos")
                 .willReturn(WireMock.jsonResponse("""
                         {
-                          "status": 404,
-                          "message": "User with name = 'nonExistingUser' does not exist"
+                            "message": "Not Found",
+                            "documentation_url": "https://docs.github.com/rest/repos/repos#list-repositories-for-a-user",
+                            "status": "404"
                         }
                         """,
                         404
